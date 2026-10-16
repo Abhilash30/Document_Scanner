@@ -2,3 +2,4 @@
 models/
 /home/abhilash/Projects/doc_scanner/models/svm_ocr_rawpixels.joblib
 /home/abhilash/Projects/doc_scanner/models/svm_ocr.joblib
+data/typedCSV.csv
