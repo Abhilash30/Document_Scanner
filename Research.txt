@@ -1,0 +1,53 @@
+Pixels       → representation of the image
+HOG features → representation of the image's shape/edges
+SVM          → classifier that learns from the representation
+
+OOP architecture
+
+doc_scanner/
+│
+├── data/
+│   └── typedCSV.csv
+│
+├── src/
+│   │
+│   ├── dataset/
+│   │   └── character_dataset.py
+│   │
+│   ├── preprocessing/
+│   │   └── image_processor.py
+│   │
+│   ├── features/
+│   │   ├── feature_extractor.py
+│   │   ├── raw_pixel_extractor.py
+│   │   └── hog_extractor.py
+│   │
+│   ├── models/
+│   │   └── svm_classifier.py
+│   │
+│   ├── evaluation/
+│   │   └── evaluator.py
+│   │
+│   └── main.py
+│
+└── README.md
+
+Why normalize raw pixels?
+- SVM is sensitive to the scale of input features - due to dot products
+- Without normalization: Multiplying large pixel values (like \(255 \times 255\)) repeatedly across thousands of pixels can lead to extremely large numbers. This causes arithmetic overflow or numerical precision issues, causing the optimization algorithm to struggle to converge or fail completely.
+To avoid overflow, computers use decimals (called "floating-point numbers"). However, these have their own trap: they lose precision when mixing massive numbers with tiny numbers.
+In AI and image processing, algorithms calculate tiny adjustments (like 0.0001) to improve an image or model. If the computer has to add a tiny adjustment (0.0001) to a massive pixel product (like 16,000,000), it physically lacks the space to keep track of both. It rounds off the tiny number, treating it as if it were 0.
+- 
+
+Problems faced:
+- understanding python packaging
+- understanding the labelling of the data the label (1st y column) corresponds to the different variations of a character 
+- Feature vectors created from raw pixels are not able to identify a handdrawn A that is further from the training data in terms of pixel intensity as features generated from raw pixels only focus on pixel intensity (Hence the need for HOG)
+- 
+
+I started with raw pixel SVM, investigated its errors, introduced HOG as a hand-crafted feature representation, compared the two, then built segmentation to connect isolated-character classification to document-level OCR.
+
+-Line segmentation - split the image into horizontal lines - deskew text to get in the same line
+-Word/ character segmentation - Vertical projection profile - sum per column - gaps - larger gaps words
+CCA (Connected component analysis) - alternative to projections - find components in binary image/
+Special cases - dots (i, j), touching chars
